@@ -8,7 +8,7 @@ import smtplib
 MY_EMAIL = "johnivanpuayapamerica@gmail.com"
 EMAIL_PASSWORD = os.environ['EMAIL_PASSWORD']
 
-print("Welcome to Amazon Price Tracker!\n")
+print("Welcome to the Amazon Price Tracker!\n")
 url = input("Please enter the URL that you want to keep track of: ")
 budget = float(input("Please enter your budget (in $): "))
 user_email = input("Please enter your email: ")
@@ -26,12 +26,12 @@ response = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.
 soup = BeautifulSoup(response.text, 'lxml')
 
 
-def find():
+def check_for_captcha():
     print(soup)
     if soup.find(name="p", class_="a-last"):
         print("Captcha HTML was returned. Trying again!")
         time.sleep(10)
-        find()
+        check_for_captcha()
     else:
         find_price_and_title()
 
@@ -58,19 +58,19 @@ def find_price_and_title():
     title = title_container.text.strip()
     print(title)
 
-    send_email(title, price)
+    # Check if price is within budget to send the email
+    if price <= budget:
+        send_email(title, price)
 
 
 def send_email(title, price):
     print("Sending an Email")
-    # Check if price is within budget to send the mail
-    if price <= budget:
-        message = message = f"Subject: Amazon Price Alert!\n\n{title} is now at ${price}\n Buy it here now: {url}"
-        print(message)
-        with smtplib.SMTP("smtp.gmail.com") as connection:
-            connection.starttls()
-            connection.login(user=MY_EMAIL, password=EMAIL_PASSWORD)
-            connection.sendmail(from_addr=MY_EMAIL, to_addrs=user_email, msg=message)
+    message = f"Subject: Amazon Price Alert!\n\n{title} is now at ${price}\n Buy it here now: {url}"
+    print(message)
+    with smtplib.SMTP("smtp.gmail.com") as connection:
+        connection.starttls()
+        connection.login(user=MY_EMAIL, password=EMAIL_PASSWORD)
+        connection.sendmail(from_addr=MY_EMAIL, to_addrs=user_email, msg=message)
 
 
-find()
+check_for_captcha()
