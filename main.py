@@ -19,7 +19,9 @@ response = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.
                                       "Accept-Language": "en-US,en;q=0.6",
                                       "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,"
                                                 "image/webp,image/apng,*/*;q=0.8",
-                                      "referer": "https://www.amazon.com/"})
+                                      "Cookie": "PHPSESSID=aac8c4d9d57769f7c1a3483c9618aa53",
+                                      "sec-ch-ua-platform": "Windows",
+                                      "Accept-Encoding": "gzip, deflate, br"})
 
 soup = BeautifulSoup(response.text, 'lxml')
 
